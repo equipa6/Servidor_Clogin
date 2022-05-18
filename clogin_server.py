@@ -15,7 +15,7 @@ def recibir_mensajes(conn, addr):
         try:
             missatge = conn.recv(1024)
             print("{} --> {}".format(missatge.decode(),addr[0]))
-            #enviar_mensajes(missatge)   
+            enviar_mensajes(missatge)   
         except:
             pass
 
@@ -23,12 +23,10 @@ def enviar_mensajes(mss):
     mss = mss.decode()
     indice_coma = mss.index(",")
     nom_usuari = mss[0:indice_coma]
+    missatge_enviar = mss[indice_coma+1:]
     indice_nombre_cliente = nombre_clientes.index(nom_usuari)
     connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
-    try:
-        connexion_enviar_mensaje.send(mss.encode())
-    except:
-        pass
+    connexion_enviar_mensaje.send(missatge_enviar.encode())
 
 while True:
     connexio, address = srv_clogin.accept()
