@@ -1,7 +1,7 @@
 import socket
 import threading
 
-ip = "127.0.0.1"
+ip = "172.21.233.33"
 port = 8432
 
 srv_clogin = socket.socket()
