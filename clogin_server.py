@@ -14,7 +14,6 @@ def recibir_mensajes(conn, addr):
     while True:
         try:
             missatge = conn.recv(1024)
-            print("{} --> {}".format(missatge.decode(),addr[0]))
             enviar_mensajes(missatge)   
         except:
             pass
