@@ -26,7 +26,10 @@ def enviar_mensajes(mss):
     missatge_enviar = mss[indice_coma+1:]
     indice_nombre_cliente = nombre_clientes.index(nom_usuari)
     connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
-    connexion_enviar_mensaje.send(missatge_enviar.encode())
+    try:
+        connexion_enviar_mensaje.send(missatge_enviar.encode())
+    except:
+        pass
 
 while True:
     connexio, address = srv_clogin.accept()
@@ -36,5 +39,6 @@ while True:
     print("S'ha connectat l'usuari {} amb la IP --> {}".format(nom_client.decode(), address))
     connexio.send("Correct".encode())  
     ejecutar_funcio = threading.Thread(target=recibir_mensajes, args=(connexio, address))
+    ejecutar_funcio.daemon = True
     ejecutar_funcio.start()
         
