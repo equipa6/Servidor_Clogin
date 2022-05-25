@@ -17,7 +17,6 @@ def recibir_mensajes(conn, addr):
             if missatge:
                 missatge_val = missatge.decode()
                 if "+" in missatge_val:
-                    print("ha entrat")
                     index_eliminar_client = missatge_val.index("+")
                     eliminar_client(missatge_val[index_eliminar_client+1:])
                 else:
@@ -50,11 +49,14 @@ def enviar_mensajes(mss):
 while True:
     connexio, address = srv_clogin.accept()
     nom_client = connexio.recv(1024)
-    socket_id_clientes.append(connexio)
-    nombre_clientes.append(nom_client.decode())
-    print("S'ha connectat l'usuari {} amb la IP --> {}".format(nom_client.decode(), address))
-    connexio.send("Correct".encode())  
-    ejecutar_funcio = threading.Thread(target=recibir_mensajes, args=(connexio, address))
-    ejecutar_funcio.daemon = True
-    ejecutar_funcio.start()
+    if nom_client.decode() not in nombre_clientes:
+        socket_id_clientes.append(connexio)
+        nombre_clientes.append(nom_client.decode())
+        print("S'ha connectat l'usuari {} amb la IP --> {}".format(nom_client.decode(), address))
+        connexio.send("Correct".encode())  
+        ejecutar_funcio = threading.Thread(target=recibir_mensajes, args=(connexio, address))
+        ejecutar_funcio.daemon = True
+        ejecutar_funcio.start()
+    else:
+        connexio.send("Error".encode())
         
