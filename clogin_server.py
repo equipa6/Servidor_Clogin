@@ -37,7 +37,7 @@ def enviar_mensajes(mss):
         nom_del_usuari_eliminar = mss[index_eliminar_client+1:]
         index_si = nombre_clientes.index(nom_del_usuari_eliminar)
         socket_id_clientes.pop(index_si)
-        print("{} a marxat del xat".format(nombre_clientes[index_eliminar_client]))
+        print("{} a marxat del xat".format(nombre_clientes[nom_del_usuari_eliminar]))
         nombre_clientes.pop(index_si)
 
 
