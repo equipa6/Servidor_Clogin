@@ -22,7 +22,7 @@ def enviar_mensajes(mss):
     mss = mss.decode()
     indice_coma = mss.index(",")
     nom_usuari = mss[0:indice_coma]
-    missatge_enviar = mss[indice_coma+1:]
+    missatge_enviar = mss.strip()
     indice_nombre_cliente = nombre_clientes.index(nom_usuari)
     connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
     try:
