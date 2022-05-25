@@ -26,11 +26,17 @@ def enviar_mensajes(mss):
     nom_verificacio_user = mss[index_nom_verificacio_user+1:]
     missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
     indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
-    connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
-    try:
-        connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
-    except:
-        pass
+    if missatge_enviar != "protocol:sortir:socketsecret":
+        connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
+        try:
+            connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
+        except:
+            pass
+    else:
+        index_eliminar_client = nombre_clientes.index(nom_verificacio_user)
+        socket_id_clientes.pop(index_eliminar_client)
+        print("{} a marxat del xat".format(nombre_clientes[index_eliminar_client]))
+        nombre_clientes.pop(index_eliminar_client)
 
 while True:
     connexio, address = srv_clogin.accept()
