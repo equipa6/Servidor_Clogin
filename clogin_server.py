@@ -14,33 +14,39 @@ def recibir_mensajes(conn, addr):
     while True:
         try:
             missatge = conn.recv(1024)
-            enviar_mensajes(missatge)   
+            if missatge:
+                missatge_val = missatge.decode()
+                if "+" in missatge_val:
+                    print("ha entrat")
+                    index_eliminar_client = missatge_val.index("+")
+                    eliminar_client(missatge_val[index_eliminar_client+1:])
+                else:
+                    enviar_mensajes(missatge)  
         except:
             pass
 
+def eliminar_client(nom):
+    global nombre_clientes
+    global socket_id_clientes
+    index_si = nombre_clientes.index(nom)
+    socket_id_clientes.pop(index_si)
+    print("{} a marxat del xat".format(nom))
+    nombre_clientes.pop(index_si)
+        
 def enviar_mensajes(mss):
     mss = mss.decode()
-    if "protocol:sortir:socketsecret" in mss:
-        index_nom_a_enviar = mss.index("-")
-        nom_a_enviar = mss[0:index_nom_a_enviar]
-        index_nom_verificacio_user = mss.index("_")
-        nom_verificacio_user = mss[index_nom_verificacio_user+1:]
-        missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
-        indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
-        connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
-        try:
-            connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
-        except:
-            pass
-    else:
-        index_eliminar_client = mss.index(",")
-        nom_del_usuari_eliminar = mss[index_eliminar_client+1:]
-        index_si = nombre_clientes.index(nom_del_usuari_eliminar)
-        socket_id_clientes.pop(index_si)
-        print("{} a marxat del xat".format(nombre_clientes[nom_del_usuari_eliminar]))
-        nombre_clientes.pop(index_si)
-
-
+    index_nom_a_enviar = mss.index("-")
+    nom_a_enviar = mss[0:index_nom_a_enviar]
+    index_nom_verificacio_user = mss.index("_")
+    nom_verificacio_user = mss[index_nom_verificacio_user+1:]
+    missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
+    indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
+    connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
+    try:
+        connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
+    except:
+        pass 
+        
 while True:
     connexio, address = srv_clogin.accept()
     nom_client = connexio.recv(1024)
