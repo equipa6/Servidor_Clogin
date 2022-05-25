@@ -20,13 +20,15 @@ def recibir_mensajes(conn, addr):
 
 def enviar_mensajes(mss):
     mss = mss.decode()
-    indice_coma = mss.index(",")
-    nom_usuari = mss[0:indice_coma]
-    missatge_enviar = mss.strip()
-    indice_nombre_cliente = nombre_clientes.index(nom_usuari)
+    index_nom_a_enviar = mss.index("-")
+    nom_a_enviar = mss[0:index_nom_a_enviar]
+    index_nom_verificacio_user = mss.index("_")
+    nom_verificacio_user = mss[index_nom_verificacio_user+1:]
+    missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
+    indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
     connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
     try:
-        connexion_enviar_mensaje.send(missatge_enviar.encode())
+        connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
     except:
         pass
 
