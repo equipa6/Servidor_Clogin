@@ -20,23 +20,26 @@ def recibir_mensajes(conn, addr):
 
 def enviar_mensajes(mss):
     mss = mss.decode()
-    index_nom_a_enviar = mss.index("-")
-    nom_a_enviar = mss[0:index_nom_a_enviar]
-    index_nom_verificacio_user = mss.index("_")
-    nom_verificacio_user = mss[index_nom_verificacio_user+1:]
-    missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
-    indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
-    if missatge_enviar != "protocol:sortir:socketsecret":
+    if "protocol:sortir:socketsecret" in mss:
+        index_nom_a_enviar = mss.index("-")
+        nom_a_enviar = mss[0:index_nom_a_enviar]
+        index_nom_verificacio_user = mss.index("_")
+        nom_verificacio_user = mss[index_nom_verificacio_user+1:]
+        missatge_enviar = mss[index_nom_a_enviar+1:index_nom_verificacio_user]
+        indice_nombre_cliente = nombre_clientes.index(nom_a_enviar)
         connexion_enviar_mensaje = socket_id_clientes[indice_nombre_cliente]
         try:
             connexion_enviar_mensaje.send("{},{}".format(nom_verificacio_user,missatge_enviar).encode())
         except:
             pass
     else:
-        index_eliminar_client = nombre_clientes.index(nom_verificacio_user)
-        socket_id_clientes.pop(index_eliminar_client)
+        index_eliminar_client = mss.index(",")
+        nom_del_usuari_eliminar = mss[index_eliminar_client+1:]
+        index_si = nombre_clientes.index(nom_del_usuari_eliminar)
+        socket_id_clientes.pop(index_si)
         print("{} a marxat del xat".format(nombre_clientes[index_eliminar_client]))
-        nombre_clientes.pop(index_eliminar_client)
+        nombre_clientes.pop(index_si)
+
 
 while True:
     connexio, address = srv_clogin.accept()
