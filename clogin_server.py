@@ -49,14 +49,25 @@ def enviar_mensajes(mss):
 while True:
     connexio, address = srv_clogin.accept()
     nom_client = connexio.recv(1024)
-    if nom_client.decode() not in nombre_clientes:
-        socket_id_clientes.append(connexio)
-        nombre_clientes.append(nom_client.decode())
-        print("S'ha connectat l'usuari {} amb la IP --> {}".format(nom_client.decode(), address))
+    if "+" in nom_client.decode():
+        missatge_registre = nom_client.decode()
+        index_mes = missatge_registre.index("+")
+        index_dos_punts = missatge_registre.index(":")
+        nom_client_registrar = missatge_registre[index_mes+1:index_dos_punts]
+        contrasenya_registre_usuari = missatge_registre[index_dos_punts+1:]
+        base_dades = open("basedades.txt", "a")
+        base_dades.write(",{}:{}".format(nom_client,contrasenya_registre_usuari))
+        base_dades.close()
         connexio.send("Correct".encode())  
-        ejecutar_funcio = threading.Thread(target=recibir_mensajes, args=(connexio, address))
-        ejecutar_funcio.daemon = True
-        ejecutar_funcio.start()
-    else:
-        connexio.send("Error".encode())
+    else: 
+        if nom_client.decode() not in nombre_clientes:
+            socket_id_clientes.append(connexio)
+            nombre_clientes.append(nom_client.decode())
+            print("S'ha connectat l'usuari {} amb la IP --> {}".format(nom_client.decode(), address))
+            connexio.send("Correct".encode())  
+            ejecutar_funcio = threading.Thread(target=recibir_mensajes, args=(connexio, address))
+            ejecutar_funcio.daemon = True
+            ejecutar_funcio.start()
+        else:
+            connexio.send("Error".encode())
         
