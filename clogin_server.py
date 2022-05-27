@@ -1,8 +1,7 @@
-from glob import glob
 import socket
 import threading
 
-ip = "localhost"
+ip = "172.21.233.33"
 port = 8432
 
 srv_clogin = socket.socket()
@@ -32,7 +31,6 @@ def eliminar_client(nom):
     socket_id_clientes.pop(index_si)
     print("{} a marxat del xat".format(nom))
     nombre_clientes.pop(index_si)
-
 
 def client_fallido_inici_sessio(conn):
     global socket_id_clientes
